@@ -11,7 +11,8 @@ def F(n, s):
 GOLD = (255, 196, 90)
 # ---------------- timeline: chapter cards + lines
 D = {}
-for a in (0, 33, 66): D.update({int(k): v for k, v in json.load(open(f"{O}d_{a}.json")).items()})
+import glob
+for fn in glob.glob(O + "d_*.json"): D.update({int(k): v for k, v in json.load(open(fn)).items()})
 EV = []; t = 0.6; prev = -1
 for i, l in enumerate(L):
     if l["ch"] != prev:
@@ -132,7 +133,7 @@ VIG = (1 - 0.6 * np.clip(((lx - lw / 2) / (lw * .72)) ** 2 + ((ly - lh / 2) / (l
 def mood_at(t, k):
     st = ST[k]; e = EV[k]; m = MOOD[st["ch"]]
     if st["ch"] == 4: m = 1 if t < next(x["t0"] for x in EV if x["kind"] == "line" and L[x["i"]]["text"].startswith("Shortly before")) else 3
-    if st["ch"] == 1 and e["i"] < 14: m = 0
+    if st["ch"] == 1 and e["i"] < next(j for j, x in enumerate(L) if x["text"].startswith("At eight sixteen")): m = 0
     return m
 _pm = [None, None, 0.0]
 def bg(t, m):
