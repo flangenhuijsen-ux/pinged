@@ -51,14 +51,14 @@ p.stdin.close(); p.wait()
 # ---- audio: original up to the cut (short fade), then chime + voice
 subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", src, "-vn", "-ac", "2", "-ar", str(SR), "/home/claude/outro/a.wav"], check=True)
 A, _ = sf.read("/home/claude/outro/a.wav"); k = int(t0 * SR); head = A[:k].copy()
-tail = A[k:k + int(LEN * SR)].copy(); tail = np.vstack([tail, np.zeros((int(LEN * SR) - len(tail), 2))]) * 0.5
+tail = A[k:k + int(LEN * SR)].copy(); tail = np.vstack([tail, np.zeros((int(LEN * SR) - len(tail), 2))]) * 0.35
 o = np.zeros((int(LEN * SR), 2)) + tail
 tt = np.arange(int(1.6 * SR)) / SR
 for j, (f, at) in enumerate(((1174.66, 0.02), (1760.0, 0.12))):
     c = sum(np.sin(2 * np.pi * f * r * tt) * am * np.exp(-tt * dc) for r, am, dc in ((1, 1, 4.5), (2.76, .35, 7), (5.4, .18, 11))) * 0.07
     kk = int(at * SR); m = min(len(c), len(o) - kk); o[kk:kk + m] += c[:m, None]
 pad = (np.sin(2 * np.pi * 146.83 * np.arange(len(o)) / SR) + 0.6 * np.sin(2 * np.pi * 220 * np.arange(len(o)) / SR)) * 0.018 * np.hanning(len(o)); o += pad[:, None]
-kk = int(0.3 * SR); o[kk:kk + len(vo)] += vo[:, None] * 0.62
+kk = int(0.3 * SR); o[kk:kk + len(vo)] += vo[:, None] * 1.0
 f = int(0.3 * SR); o[-f:] *= np.linspace(1, 0, f)[:, None]
 sf.write("/home/claude/outro/mix.wav", np.clip(np.vstack([head, o]), -0.98, 0.98), SR)
 subprocess.run(["ffmpeg", "-v", "error", "-y", "-t", f"{t0:.3f}", "-i", src, "-i", "/home/claude/outro/o.mp4", "-i", "/home/claude/outro/mix.wav", "-filter_complex", "[0:v][1:v]concat=n=2:v=1:a=0[v]", "-map", "[v]", "-map", "2:a", "-c:v", "libx264", "-preset", "medium", "-crf", "23", "-maxrate", "8M", "-bufsize", "16M", "-pix_fmt", "yuv420p", "-c:a", "aac", "-b:a", "192k", "-movflags", "+faststart", dst + ".tmp.mp4"], check=True)
