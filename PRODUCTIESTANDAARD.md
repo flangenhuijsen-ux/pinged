@@ -44,3 +44,8 @@ Elke nieuwe video volgt deze regels. Ze komen uit de data van de eerste Shorts:
 - **Geen anachronismen:** een foto van na het moment komt niet in onze krant van dat moment.
 - **Audio:** stem + 432 Hz-pad 12 dB onder de stem, eindmix genormaliseerd op −14 LUFS, true peak ≤ −1 dBTP.
 - **Slot met trailerstem (vanaf 27 nov):** elke ELAPSED-video eindigt met de verteller ("Follow, …"), dan 0,15 s stilte en een bioscoopklap (braam + subdrop, 432 Hz), waarna een zware, warme trailerstem zegt: "Elapsed. — Every second. — Is on the record." Stem: Kokoro am_onyx, snelheid 0,78, −2 halve tonen, warme EQ, compressie, lichte saturatie en hallgalm. Eindkaart toont ELAPSED met gloed en de slogan woord voor woord op de stem. Bestanden: engine/elapsed/slogan/.
+
+## Stemmen (vanaf 27 nov 2026, via vidIQ voiceover, 28 credits per 1.000 tekens)
+- **PINGED:** Daniel — Steady Broadcaster (voiceId onwK4e9ZLuTAKqWW03F9). Hele vertelling.
+- **ELAPSED:** Bill — Wise, Mature, Balanced (voiceId pqHfZKP75CvOlQylNhV4). Hele vertelling + vaste slogan-opname (engine/elapsed/slogan/bill.wav, hergebruiken, kost niets).
+- Genereren met scriptLines (één regel per zin) → regeltijden opslaan → Ferry downloadt de mp3 (vidIQ-servers zijn vanuit de werkomgeving niet bereikbaar) → knippen op de opgeslagen starttijden.
