@@ -49,3 +49,10 @@ Elke nieuwe video volgt deze regels. Ze komen uit de data van de eerste Shorts:
 - **PINGED:** Daniel — Steady Broadcaster (voiceId onwK4e9ZLuTAKqWW03F9). Hele vertelling.
 - **ELAPSED:** Bill — Wise, Mature, Balanced (voiceId pqHfZKP75CvOlQylNhV4). Hele vertelling + vaste slogan-opname (engine/elapsed/slogan/bill.wav, hergebruiken, kost niets).
 - Genereren met scriptLines (één regel per zin) → regeltijden opslaan → Ferry downloadt de mp3 (vidIQ-servers zijn vanuit de werkomgeving niet bereikbaar) → knippen op de opgeslagen starttijden.
+
+## Vaste slotzin — ALTIJD, in elke video (vastgelegd 27 nov 2026)
+Geen video gaat naar Ferry of online zonder het slot van zijn kanaal. Controle vóór elke oplevering: laatste 4 s bekijken én meten (de slotzin moet hoorbaar zijn).
+- **PINGED Shorts:** laatste 1,2 s gaan over in de PINGED-eindkaart ("New story tomorrow.") met Daniel: *"Follow, and get pinged tomorrow."* Automatisch via engine/outro/outro_v2.py (render_v2.sh roept hem aan; eindbestand = v2_final.mp4). Opname: outro/vo_daniel.wav — één keer gemaakt, altijd hergebruiken (0 credits).
+- **PINGED lange video's:** zelfde slotzin van Daniel + eindkaart in 16:9, na de laatste scène.
+- **ELAPSED Shorts en lange video's:** bioscoopklap + Bill: *"Elapsed. Every second… is on the record."* met de ELAPSED-eindkaart (engine/elapsed/slogan/endcard.py, opname bill.wav/tr5.wav, 0 credits).
+- Wie een video opnieuw maakt (nieuwe stem, nieuwe look), zet het slot er opnieuw achter — het slot hoort bij het eindbestand, niet bij een losse stap.
