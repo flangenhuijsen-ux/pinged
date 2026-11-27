@@ -34,3 +34,12 @@ Elke nieuwe video volgt deze regels. Ze komen uit de data van de eerste Shorts:
 ## 6. Altijd
 - Feiten tegen de bron; wat getekend of samengevat is, staat erbij.
 - Geluid: gemeten, niet gehoord. 432 Hz-muziek.
+
+## ELAPSED — beeldregels (vanaf Halifax v2, 27 nov 2026)
+- **Tempo als PINGED:** 20–25 shots per Short, nooit langer dan ~4 s hetzelfde beeld (meetlat: max stilstand ≤ 4,5 s, ≥ 55 gebeurtenissen/min). Harde cuts met whoosh/thump.
+- **Afwisseling per Short:** klok (seven-segment), bewegende kaart, echte archieffoto's (alleen push, nooit bewerkt of iets op getekend), eigen krant "The Elapsed Record" kort en ingezoomd, echte krantenscan met rode markering/stempel, teller, telegram/ticker.
+- **Optie 2 — bewegende illustraties (standaard):** 2–4 eigen illustraties in gravure/krantenstijl die bewegen (rook, vlammen, golven, roeiboot, menigte). Altijd label **ILLUSTRATION** in beeld. **Geen fotorealistische AI-beelden.**
+- **Echt vs. reconstructie:** echte foto's krijgen "PHOTOGRAPH · bron"; kaarten "DIAGRAM, NOT TO SCALE"; eindkaart vermeldt dat krant en illustraties reconstructies zijn.
+- **Cijfers in beeld:** als bronnen verschillen, zeg dat ("Estimates vary; X is the figure most often cited").
+- **Geen anachronismen:** een foto van na het moment komt niet in onze krant van dat moment.
+- **Audio:** stem + 432 Hz-pad 12 dB onder de stem, eindmix genormaliseerd op −14 LUFS, true peak ≤ −1 dBTP.
