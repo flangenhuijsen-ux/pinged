@@ -68,6 +68,11 @@ if sys.argv[1] == "audio":
     pad *= .6 + .4 * np.clip(tt / DUR * 1.4, 0, 1); pulse = (.5 + .5 * np.sin(2 * np.pi * (1.0 + 1.2 * np.clip((tt - T_AMB) / (T_RED - T_AMB), 0, 1)) * tt)) ** 4     # heartbeat that speeds up
     pad += .35 * np.sin(2 * np.pi * 55 * TU * tt) * pulse * (tt > V[2]); pad += (tt > T_RED) * .3 * np.sin(2 * np.pi * 77.78 * TU * tt)
     bq, aq = sg.butter(2, [45 / (SR / 2), 2600 / (SR / 2)], "band"); pad = sg.lfilter(bq, aq, pad); pad *= rms(v[np.abs(v) > .02]) * 10 ** (-12 / 20) / rms(pad)
+    if os.path.exists(O + "music432.wav"):
+        mu, _ = sf.read(O + "music432.wav"); mu = mu.mean(1) if mu.ndim > 1 else mu; mu = np.pad(mu, (0, max(0, n - len(mu))))[:n]
+        mu *= np.clip(tt / .15, 0, 1); body = mu[:int(T_SLOGAN * SR)]; mu *= rms(v[np.abs(v) > .02]) * 10 ** (-9 / 20) / rms(body)
+        env = np.convolve(np.abs(v), np.ones(int(SR * .12)) / int(SR * .12), "same"); duck = 10 ** (-3.5 * np.clip(env / .05, 0, 1) / 20)
+        pad = mu * duck
     fx = np.zeros(n); rng = np.random.default_rng(2)
     def put(x, t0, g=1.0):
         k = int(t0 * SR); m = min(len(x), n - k)
@@ -81,7 +86,7 @@ if sys.argv[1] == "audio":
     for m in MS:
         for j in range(0, len(m[3]), 2): put(key * (.8 + .4 * rng.random()), m[0] + j / CPS)
     for i in range(1, NB): put(blip, V[i] - .28, .5)
-    pad *= np.clip((T_SLOGAN - .15 - tt) / .5, 0, 1)
+    pad *= np.clip((T_SLOGAN - .15 - tt) / (.9 if os.path.exists(O + 'music432.wav') else .5), 0, 1)
     ew = np.arange(int(SR * .3)) / SR; whoosh = sg.lfilter(*sg.butter(2, [400 / (SR / 2), 4000 / (SR / 2)], 'band'), rng.normal(0, 1, len(ew))) * np.sin(np.pi * ew / ew[-1]) ** 2 * .05
     for a_, b2_, _v in ILL: put(whoosh, a_ - .08); put(whoosh, b2_ - .08)
     fx += add_slogan(rms(v[np.abs(v) > .02]), n, SR, T_SLOGAN)
@@ -119,7 +124,7 @@ def frame_radar(n):
     # clock
     s_ = f"{int(c) // 3600:02d}:{int(c) % 3600 // 60:02d}:{int(c) % 60:02d}"; w, h, th, gap, cw = 62, 116, 15, 15, 26; tw = width(s_, w, gap, cw)
     gl, lt = word((W, H), "".join("8" if ch.isdigit() else ch for ch in s_), 70, 120, w, h, th, gap, cw); lay.alpha_composite(gl); _, lt = word((W, H), s_, 70, 120, w, h, th, gap, cw); lit.alpha_composite(tintimg(lt, col)); d = ImageDraw.Draw(lay); ld = ImageDraw.Draw(lit)
-    tracked(d, 70 + tw + 40, 126, "14 APRIL 1912", F2("b6", 38), 7, AMB + (255,)); tracked(d, 70 + tw + 40, 178, "SHIP'S TIME", F2("b6", 30), 7, (255, 255, 255, 170)); tracked(d, 70, 62, "NORTH ATLANTIC  ·  WIRELESS ROOM", F2("b6", 30), 7, (255, 255, 255, 190))
+    tracked(d, 70 + tw + 40, 126, "14 APRIL 1912", F2("b6", 38), 7, AMB + (255,)); tracked(d, 70 + tw + 40, 178, "SHIP'S TIME", F2("b6", 30), 7, (255, 255, 255, 170)); tracked(d, 70, 62, "RMS TITANIC  ·  WIRELESS ROOM", F2("b6", 34), 7, (255, 255, 255, 235))
     # scope
     img += TUBE * np.array([.02, .09, .055], np.float32) * (.5 + .5 * TSH) * (np.array(col, np.float32) / np.array(GRN, np.float32)) ** .6
     d.ellipse([SCX - SR_ - 12, SCY - SR_ - 12, SCX + SR_ + 12, SCY + SR_ + 12], outline=(74, 84, 80, 255), width=12); d.ellipse([SCX - SR_ - 26, SCY - SR_ - 26, SCX + SR_ + 26, SCY + SR_ + 26], outline=(30, 36, 34, 255), width=9)
@@ -150,7 +155,7 @@ def frame_radar(n):
         m = shown[-1]; k = int((t - m[0]) * CPS); fl = max(0, 1 - (t - m[0]) / .3); d.rounded_rectangle([56, cy0, 1024, cy0 + 170], 18, outline=AMB + (int(255 * fl),), width=4)
         ld.text((84, cy0 + 16), m[1] + "   " + m[2], font=F2("b6", 30), fill=AMB + (255,)); f_ = F2("m5", 38 if len(m[3]) < 36 else 33); yq = cy0 + 62
         for ln in wrapf(d, m[3], f_, 890): ld.text((84, yq), ln[:max(0, k)] + ("_" if 0 <= k < len(ln) else ""), font=f_, fill=col + (255,)); k -= len(ln) + 1; yq += 46
-    else: ld.text((84, cy0 + 62), "LOG" + ("_" if int(t * 3) % 2 == 0 else ""), font=FM, fill=(90, 150, 120, 255))
+    else: d.text((W / 2, cy0 + 108), "TITANIC", font=F2("bb", 100), fill=(255, 255, 255, 255), anchor="mm"); tracked(d, 84, cy0 + 16, "WIRELESS LOG", F2("b6", 26), 7, AMB + (255,))
     L0 = np.asarray(lay).astype(np.float32) / 255; img = img * (1 - L0[..., 3:]) + L0[..., :3] * L0[..., 3:]; img = glow(img, lit, 1.0); img = img * (1 - TUBE * (1 - SCAN))
     # camera: slow drift, punch-in per beat, shake on slams
     z1, cx1, cy1 = b["z"]; zp, cxp, cyp = B[i - 1]["z"] if i else b["z"]; u = ease((t - V[i]) / .22); z = zp + (z1 - zp) * u; cx = cxp + (cx1 - cxp) * u; cy = cyp + (cy1 - cyp) * u
