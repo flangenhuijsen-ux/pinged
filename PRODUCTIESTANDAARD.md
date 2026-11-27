@@ -43,3 +43,4 @@ Elke nieuwe video volgt deze regels. Ze komen uit de data van de eerste Shorts:
 - **Cijfers in beeld:** als bronnen verschillen, zeg dat ("Estimates vary; X is the figure most often cited").
 - **Geen anachronismen:** een foto van na het moment komt niet in onze krant van dat moment.
 - **Audio:** stem + 432 Hz-pad 12 dB onder de stem, eindmix genormaliseerd op −14 LUFS, true peak ≤ −1 dBTP.
+- **Slot met trailerstem (vanaf 27 nov):** elke ELAPSED-video eindigt met de verteller ("Follow, …"), dan 0,15 s stilte en een bioscoopklap (braam + subdrop, 432 Hz), waarna een zware, warme trailerstem zegt: "Elapsed. — Every second. — Is on the record." Stem: Kokoro am_onyx, snelheid 0,78, −2 halve tonen, warme EQ, compressie, lichte saturatie en hallgalm. Eindkaart toont ELAPSED met gloed en de slogan woord voor woord op de stem. Bestanden: engine/elapsed/slogan/.
