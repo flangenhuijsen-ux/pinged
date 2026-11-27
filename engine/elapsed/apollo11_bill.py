@@ -26,11 +26,11 @@ V = []; t = 0.0
 for i in range(NB): V.append(t); t += D[i] + GAP.get(i, .2)
 DUR = V[13] + SLG_TOTAL + .4; T_SLOGAN = V[13]; T_BANG = 0; G = lambda h, m, s: h * 3600 + m * 60 + s
 REDS = (255, 70, 52); END_NOTE = "ILLUSTRATIONS, SCREENS AND DIAGRAMS ARE RECONSTRUCTIONS · SOURCE: NASA"
-S_ = [(0, 0, "screen", dict(w="1202", sub="PROGRAM ALARM · LUNAR MODULE EAGLE", amber=True)),
+S_ = [(0, 0, "screen", dict(w="1202", sub="THE LANDER'S COMPUTER WAS OVERLOADED", amber=True, top=["APOLLO 11", "FIRST MOON LANDING · 1969"], over="COMPUTER ALARM")),
       (0, 2.4, "slam", dict(lines=[("SECONDS", 230), ("FROM AN", 200), ("ABORT", 300)], kicker="THE ELAPSED RECORD · 20 JULY 1969", stamp=None)),
       (1, 0, "illus", dict(var="lm")),
       (1, 3.6, "word", dict(w="EAGLE", sub="TWO MEN · ONE FRAGILE LANDER")),
-      (2, 0, "screen", dict(w="1202", sub="AS THE CREW SAW IT · RECONSTRUCTION", amber=True, big=True)),
+      (2, 0, "screen", dict(w="1202", sub="AS THE CREW SAW IT · RECONSTRUCTION", amber=True, big=True, over="PROGRAM ALARM")),
       (3, 0, "slam", dict(lines=[("PROGRAM", 220), ("ALARM 1202", 220)], kicker="20 JULY 1969 · POWERED DESCENT", stamp="NOT IN THEIR SIMULATIONS")),
       (4, 0, "load", {}),
       (4, 1.7, "word", dict(w="ABORT", sub="OR KEEP GOING?")),
@@ -61,6 +61,11 @@ if sys.argv[1] == "audio":
     hb = (.5 + .5 * np.sin(2 * np.pi * (1.0 + .8 * np.clip((tt - V[1]) / (V[10] - V[1]), 0, 1)) * tt)) ** 6 * (tt > V[1]) * (tt < V[10])
     pad += .45 * np.sin(2 * np.pi * 49 * TU * tt) * hb; pad *= np.where(tt < V[10], 1.0, .75)
     bq, aq = sg.butter(2, [30 / (SR / 2), 1800 / (SR / 2)], "band"); pad = sg.lfilter(bq, aq, pad); pad *= rms(v[np.abs(v) > .02]) * 10 ** (-12 / 20) / rms(pad); pad *= np.clip((T_SLOGAN - .15 - tt) / .5, 0, 1)
+    if os.path.exists(O + "music432.wav"):
+        mu, _ = sf.read(O + "music432.wav"); mu = mu.mean(1) if mu.ndim > 1 else mu; mu = np.pad(mu, (0, max(0, n - len(mu))))[:n]
+        mu *= np.clip(tt / .15, 0, 1); body = mu[:int(T_SLOGAN * SR)]; mu *= rms(v[np.abs(v) > .02]) * 10 ** (-13 / 20) / rms(body)
+        env = np.convolve(np.abs(v), np.ones(int(SR * .12)) / int(SR * .12), "same"); duck = 10 ** (-3.5 * np.clip(env / .05, 0, 1) / 20)
+        pad = mu * duck * np.clip((T_SLOGAN - .15 - tt) / .9, 0, 1)
     fx = np.zeros(n)
     def put(x, t0, g=1.0):
         k = int(t0 * SR); m = min(len(x), n - k)
@@ -228,10 +233,13 @@ def screen(p, lt, t):
     for yy_ in range(int(y0), int(y0 + ph_), 6): d.line([x0, yy_, x0 + pw, yy_], fill=(0, 0, 0, 60))
     u = ease(lt / .15); fs = 260 if len(p["w"]) < 8 else 170
     while d.textlength(p["w"], font=F("bb", fs)) > pw - 80: fs -= 10
-    gl = Image.new("RGBA", (W, H), (0, 0, 0, 0)); gd = ImageDraw.Draw(gl); gd.text((W / 2, y0 + ph_ / 2), p["w"], font=F("bb", int(fs * (1.15 - .15 * u))), fill=col + (int(255 * fl),), anchor="mm")
+    gl = Image.new("RGBA", (W, H), (0, 0, 0, 0)); gd = ImageDraw.Draw(gl); gd.text((W / 2, y0 + ph_ / 2 + (40 if p.get("over") else 0)), p["w"], font=F("bb", int(fs * (1.15 - .15 * u))), fill=col + (int(255 * fl),), anchor="mm")
     ga = np.asarray(gl).astype(np.float32) / 255; img = img + cv2.GaussianBlur(ga[..., :3] * ga[..., 3:], (0, 0), 30) * .9
     lay.alpha_composite(gl); d = ImageDraw.Draw(lay)
-    d.text((W / 2, y0 + ph_ + 90), p["sub"], font=F("b6", 36), fill=(255, 255, 255, 190), anchor="mm")
+    d.text((W / 2, y0 + ph_ + 90), p["sub"], font=F("b6", 40 if p.get("top") else 36), fill=(255, 255, 255, 220 if p.get("top") else 190), anchor="mm")
+    if p.get("over"): d.text((W / 2, y0 + 62), p["over"], font=F("b7", 52), fill=col + (int(230 * fl),), anchor="mm")
+    if p.get("top"):
+        d.text((W / 2, 330), p["top"][0], font=F("bb", 150), fill=(255, 255, 255, 255), anchor="mm"); d.text((W / 2, 440), p["top"][1], font=F("b7", 52), fill=(255, 220, 170, 255), anchor="mm")
     if not green and not amb:
         for k in range(2):
             lx = 200 + k * 680; on = (int(t * 4) + k) % 2 == 0; d.ellipse([lx - 26, 380, lx + 26, 432], fill=(255, 40, 30, 255) if on else (70, 20, 18, 255))

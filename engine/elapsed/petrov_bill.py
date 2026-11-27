@@ -66,6 +66,11 @@ if sys.argv[1] == "audio":
     hb = (.5 + .5 * np.sin(2 * np.pi * (1.0 + .8 * np.clip((tt - V[1]) / (V[8] - V[1]), 0, 1)) * tt)) ** 6 * (tt > V[1]) * (tt < V[8])
     pad += .45 * np.sin(2 * np.pi * 49 * TU * tt) * hb; pad *= np.where(tt < V[9], 1.0, .7)
     bq, aq = sg.butter(2, [30 / (SR / 2), 1800 / (SR / 2)], "band"); pad = sg.lfilter(bq, aq, pad); pad *= rms(v[np.abs(v) > .02]) * 10 ** (-12 / 20) / rms(pad); pad *= np.clip((T_SLOGAN - .15 - tt) / .5, 0, 1)
+    if os.path.exists(O + "music432.wav"):
+        mu, _ = sf.read(O + "music432.wav"); mu = mu.mean(1) if mu.ndim > 1 else mu; mu = np.pad(mu, (0, max(0, n - len(mu))))[:n]
+        mu *= np.clip(tt / .15, 0, 1); body = mu[:int(T_SLOGAN * SR)]; mu *= rms(v[np.abs(v) > .02]) * 10 ** (-13 / 20) / rms(body)
+        env = np.convolve(np.abs(v), np.ones(int(SR * .12)) / int(SR * .12), "same"); duck = 10 ** (-3.5 * np.clip(env / .05, 0, 1) / 20)
+        pad = mu * duck * np.clip((T_SLOGAN - .15 - tt) / .9, 0, 1)
     fx = np.zeros(n)
     def put(x, t0, g=1.0):
         k = int(t0 * SR); m = min(len(x), n - k)
