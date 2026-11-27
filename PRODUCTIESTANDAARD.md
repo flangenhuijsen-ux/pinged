@@ -56,3 +56,9 @@ Geen video gaat naar Ferry of online zonder het slot van zijn kanaal. Controle v
 - **PINGED lange video's:** zelfde slotzin van Daniel + eindkaart in 16:9, na de laatste scène.
 - **ELAPSED Shorts en lange video's:** bioscoopklap + Bill: *"Elapsed. Every second… is on the record."* met de ELAPSED-eindkaart (engine/elapsed/slogan/endcard.py, opname bill.wav/tr5.wav, 0 credits).
 - Wie een video opnieuw maakt (nieuwe stem, nieuwe look), zet het slot er opnieuw achter — het slot hoort bij het eindbestand, niet bij een losse stap.
+
+## Pakket-check vóór inplannen (vastgelegd 27 nov 2026, ook in het dashboard → Productie)
+1. **Slotzin** zit erachter en is hoorbaar (zie hierboven).
+2. **Titeltest** met vidIQ (vidiq_score_title, type short, met channelId en videoId): doel ≥ 85. Lager → vidiq_generate_titles (6 stuks), hashtags uit de titel halen, de opties zonder clou opnieuw scoren, beste kiezen. Ferry keurt de titel goed.
+3. **Cover v3** (engine/covers/make_covers_v3.py): getal groot, weinig lege ruimte, rode cirkel + pijl naar de verborgen melding, clou verborgen. vidIQ-coverscore is gemaakt voor 16:9-thumbnails → alleen als grove richtlijn gebruiken (v2 → v3: 28 → 35, lege-ruimte-straf weg).
+4. **Na inplannen:** in YouTube tijd, tags en cover nakijken (vidIQ laat soms tags vallen; bij wijzigen altijd privacy + publishAt meesturen).
