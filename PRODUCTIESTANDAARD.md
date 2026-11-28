@@ -62,3 +62,12 @@ Geen video gaat naar Ferry of online zonder het slot van zijn kanaal. Controle v
 2. **Titeltest** met vidIQ (vidiq_score_title, type short, met channelId en videoId): doel ≥ 85. Lager → vidiq_generate_titles (6 stuks), hashtags uit de titel halen, de opties zonder clou opnieuw scoren, beste kiezen. Ferry keurt de titel goed.
 3. **Cover v3** (engine/covers/make_covers_v3.py): getal groot, weinig lege ruimte, rode cirkel + pijl naar de verborgen melding, clou verborgen. vidIQ-coverscore is gemaakt voor 16:9-thumbnails → alleen als grove richtlijn gebruiken (v2 → v3: 28 → 35, lege-ruimte-straf weg).
 4. **Na inplannen:** in YouTube tijd, tags en cover nakijken (vidIQ laat soms tags vallen; bij wijzigen altijd privacy + publishAt meesturen).
+
+## Hook v3: de eerste 3 seconden (vastgelegd 28 nov 2026, beide kanalen)
+Aanleiding: Nvidia-Short presteerde in de opening op 0,75 van vergelijkbare Shorts, aan het eind op 0,94; 37% engaged views. Het gemiddelde wegswipen gebeurt na ±1,7 s.
+1. Stem begint op 0,0 s. Eerste zin max. 8 woorden en max. 2,5 s, met een open vraag of tegenstrijdigheid (geen datum- of contextzin als opener).
+2. Geluidsklap op frame 0 (alarm, inslag, notificatiepiep). Geen stilte, geen fade.
+3. Frame 0 toont de inzet in reuzenletters (getal of situatie) en beweegt al. Het onderwerp is in het eerste beeld leesbaar.
+4. Minstens 3 beeldwissels in de eerste 3 s.
+5. Het slot sluit aan op het begin (herhaald kijken).
+6. Meten: hookscore = engaged views ÷ views per Short (dashboard → Leerlus). Na 7 dagen vergelijken met de Shorts van vóór Hook v3.
